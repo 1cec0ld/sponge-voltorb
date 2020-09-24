@@ -2,6 +2,7 @@ package com.gmail.ak1cec0ld.plugins.spongeVoltorb.game;
 
 
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Game {
@@ -32,7 +33,9 @@ public class Game {
         this.verticalV = new int[gridLength];
         this.horizontalV = new int[gridLength];
         this.verticalB = new int[gridLength];
+        Arrays.fill(this.verticalB, gridLength);
         this.horizontalB = new int[gridLength];
+        Arrays.fill(this.horizontalB, gridLength);
     }
 
 
@@ -46,29 +49,30 @@ public class Game {
         }
         int voltorbs = level+ gridLength;
         int bonuses = level+ gridLength -2;
-        double roll;
-        int counter = 0;
-
-        while(voltorbs > 0){
-            roll = r.nextDouble();
-            if( roll < 0.5 ) {
-                board[(counter%(gridLength * gridLength)/ gridLength)][counter% gridLength].value = 0;
-                verticalV[(counter%(gridLength * gridLength)/ gridLength)]++;
-                horizontalV[counter% gridLength]++;
-                voltorbs--;
+        for(int i = 0; i < voltorbs; i++){
+            int row = r.nextInt(gridLength);
+            int col = r.nextInt(gridLength);
+            if(board[row][col].value != 1) {
+                i--;
+            } else {
+                board[row][col].value = 0;
+                verticalV[row]++;
+                verticalB[row]--;
+                horizontalV[col]++;
+                horizontalB[col]--;
             }
-            counter++;
         }
-        while(bonuses > 0){
-            roll = r.nextDouble();
-            if( roll < 0.5 && board[(counter%(gridLength * gridLength)/ gridLength)][counter% gridLength].value==1){
-                roll = r.nextDouble();
-                board[(counter%(gridLength * gridLength)/ gridLength)][counter% gridLength].value = (int)Math.round(roll)+2;
-                verticalB[(counter%(gridLength * gridLength)/ gridLength)] += (int)Math.round(roll)+2;
-                horizontalB[counter% gridLength] += (int)Math.round(roll)+2;
-                bonuses--;
+        for(int i = 0; i < bonuses; i++){
+            int row = r.nextInt(gridLength);
+            int col = r.nextInt(gridLength);
+            if(board[row][col].value != 1) {
+                i--;
+            } else {
+                int val = r.nextInt(2)+2;
+                board[row][col].value = val;
+                verticalB[row] += val-1;
+                horizontalB[col] += val-1;
             }
-            counter++;
         }
     }
 
